@@ -50,14 +50,14 @@ export const ChannelsPage = () => {
   };
 
   const handleDisconnect = async (channelId) => {
-    if (!window.confirm('Disconnect this YouTube Channel and revoke access tokens?')) return;
+    if (!window.confirm('Disconnect this YouTube Channel and revoke access tokens? Scheduled auto-publishing will be paused.')) return;
     try {
       await api.delete(`/youtube/channels/${channelId}`);
-      toast.success('Channel disconnected and access tokens revoked.');
-      fetchChannels();
-      refreshUserData();
+      toast.success('Channel disconnected successfully.');
+      await fetchChannels();
+      await refreshUserData();
     } catch (err) {
-      toast.error('Failed to disconnect channel');
+      toast.error('Failed to disconnect channel: ' + (err.response?.data?.message || err.message));
     }
   };
 
@@ -183,11 +183,11 @@ export const ChannelsPage = () => {
                 </button>
 
                 <button
-                  onClick={() => handleDisconnect(ch.channelId)}
-                  className="flex items-center gap-1.5 px-3 py-1.5 rounded-xl text-xs font-semibold text-rose-400 hover:bg-rose-500/10 transition-colors"
+                  onClick={() => handleDisconnect(ch.channelId || ch._id)}
+                  className="flex items-center gap-1.5 px-3.5 py-2 rounded-xl text-xs font-bold text-rose-400 bg-rose-500/10 hover:bg-rose-500/25 border border-rose-500/20 hover:border-rose-500/40 transition-all hover:scale-105 active:scale-95"
                 >
                   <Trash2 className="w-3.5 h-3.5" />
-                  <span>Disconnect</span>
+                  <span>Disconnect Channel</span>
                 </button>
               </div>
             </div>

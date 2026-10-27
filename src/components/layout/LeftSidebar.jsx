@@ -1,5 +1,7 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { useAuth } from '../../context/AuthContext';
+import { useToast } from '../../context/ToastContext';
+import api from '../../services/api';
 import { 
   LayoutDashboard, 
   Film, 
@@ -12,7 +14,8 @@ import {
   ChevronLeft,
   X,
   AlertCircle,
-  HardDrive
+  HardDrive,
+  Unlink
 } from 'lucide-react';
 import { YoutubeIcon as Youtube } from '../common/YoutubeIcon';
 
@@ -24,8 +27,24 @@ export const LeftSidebar = ({
   onOpenUpload, 
   metrics 
 }) => {
-  const { user, connectedChannels, logout } = useAuth();
+  const { user, connectedChannels, logout, refreshUserData } = useAuth();
+  const toast = useToast();
+  const [disconnecting, setDisconnecting] = useState(false);
   const primaryChannel = connectedChannels.length > 0 ? connectedChannels[0] : null;
+
+  const handleDisconnectChannel = async (channelId) => {
+    if (!window.confirm('Disconnect this YouTube Channel and revoke access permissions?')) return;
+    setDisconnecting(true);
+    try {
+      await api.delete(`/youtube/channels/${channelId}`);
+      toast.success('YouTube channel disconnected successfully!');
+      await refreshUserData();
+    } catch (err) {
+      toast.error('Failed to disconnect channel: ' + (err.response?.data?.message || err.message));
+    } finally {
+      setDisconnecting(false);
+    }
+  };
 
   const navItems = [
     { id: 'dashboard', label: 'Dashboard', icon: LayoutDashboard },
@@ -123,7 +142,24 @@ export const LeftSidebar = ({
 
         {/* Connected YouTube Channel Card */}
         <div className="space-y-1">
-          <p className="px-3 pb-1 text-[10px] font-bold tracking-wider text-slate-400 uppercase">Channel Link</p>
+          <div className="flex items-center justify-between px-3 pb-1">
+            <span className="text-[10px] font-bold tracking-wider text-slate-400 uppercase">Channel Link</span>
+            {primaryChannel && (
+              <button
+                type="button"
+                onClick={(e) => {
+                  e.stopPropagation();
+                  handleDisconnectChannel(primaryChannel.channelId || primaryChannel._id);
+                }}
+                disabled={disconnecting}
+                className="text-[10px] text-rose-400 hover:text-rose-300 font-bold hover:underline flex items-center gap-1 cursor-pointer"
+                title="Disconnect YouTube Channel"
+              >
+                <Unlink className="w-3 h-3" />
+                <span>{disconnecting ? '...' : 'Disconnect'}</span>
+              </button>
+            )}
+          </div>
           <div 
             onClick={() => onNavigate('channels')}
             className={`cursor-pointer p-3 rounded-2xl border text-xs transition-all ${
@@ -133,13 +169,27 @@ export const LeftSidebar = ({
             }`}
           >
             {primaryChannel ? (
-              <div className="flex items-center gap-2.5">
-                <div className="w-2 h-2 rounded-full bg-emerald-400 animate-pulse shrink-0"></div>
-                <Youtube className="w-4 h-4 text-red-500 shrink-0" />
-                <div className="truncate">
-                  <p className="font-semibold text-white truncate">{primaryChannel.channelTitle}</p>
-                  <p className="text-[10px] text-emerald-400">Connected & Verified</p>
+              <div className="flex items-center justify-between gap-2">
+                <div className="flex items-center gap-2.5 min-w-0">
+                  <div className="w-2 h-2 rounded-full bg-emerald-400 animate-pulse shrink-0"></div>
+                  <Youtube className="w-4 h-4 text-red-500 shrink-0" />
+                  <div className="truncate">
+                    <p className="font-semibold text-white truncate">{primaryChannel.channelTitle}</p>
+                    <p className="text-[10px] text-emerald-400">Connected & Verified</p>
+                  </div>
                 </div>
+                <button
+                  type="button"
+                  onClick={(e) => {
+                    e.stopPropagation();
+                    handleDisconnectChannel(primaryChannel.channelId || primaryChannel._id);
+                  }}
+                  disabled={disconnecting}
+                  className="px-2 py-1 rounded-lg bg-rose-500/10 hover:bg-rose-500/25 text-rose-400 hover:text-rose-300 border border-rose-500/20 text-[10px] font-bold transition-all hover:scale-105 shrink-0"
+                  title="Disconnect Channel"
+                >
+                  {disconnecting ? '...' : 'Disconnect'}
+                </button>
               </div>
             ) : (
               <div className="flex items-center gap-2">
