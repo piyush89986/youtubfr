@@ -68,74 +68,148 @@ export const SettingsPage = () => {
             </div>
           </div>
 
-          <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 pt-2">
+          <div className="grid grid-cols-1 sm:grid-cols-3 gap-3.5 pt-2">
+            {/* Option 1: Gemini */}
             <div
               onClick={() => setAiProvider('gemini')}
-              className={`p-4 rounded-2xl border cursor-pointer transition-all ${
+              className={`p-4 rounded-2xl border cursor-pointer transition-all flex flex-col justify-between ${
                 aiProvider === 'gemini'
-                  ? 'bg-purple-950/40 border-purple-500/50 shadow-glow-purple text-white'
+                  ? 'bg-purple-950/50 border-purple-500 shadow-glow-purple text-white ring-1 ring-purple-500'
                   : 'bg-slate-950/40 border-slate-800 text-slate-400 hover:text-slate-200'
               }`}
             >
-              <div className="flex items-center justify-between mb-2">
-                <span className="font-bold text-sm text-purple-300">Google Gemini 1.5</span>
-                <span className="text-[10px] px-2 py-0.5 rounded-full bg-purple-500/20 text-purple-300 border border-purple-500/30">
-                  Recommended
-                </span>
+              <div>
+                <div className="flex items-center justify-between mb-2">
+                  <span className="font-bold text-sm text-purple-300">Google Gemini</span>
+                  <span className="text-[9px] px-2 py-0.5 rounded-full bg-purple-500/20 text-purple-300 border border-purple-500/30">
+                    10 Keys Pool
+                  </span>
+                </div>
+                <p className="text-xs text-slate-400 leading-relaxed">
+                  All work processed via Google Gemini 1.5 Flash with automatic multi-key rotation and zero downtime.
+                </p>
               </div>
-              <p className="text-xs text-slate-400 leading-relaxed">
-                Extremely large context window. Outstanding audio comprehension and viral hook boundary detection.
-              </p>
+              <div className="mt-3 flex items-center gap-1.5 text-[11px] font-semibold text-purple-400">
+                <span className="w-2 h-2 rounded-full bg-purple-400"></span>
+                {aiProvider === 'gemini' ? 'Currently Selected' : 'Click to select'}
+              </div>
             </div>
 
+            {/* Option 2: OpenAI */}
             <div
               onClick={() => setAiProvider('openai')}
-              className={`p-4 rounded-2xl border cursor-pointer transition-all ${
+              className={`p-4 rounded-2xl border cursor-pointer transition-all flex flex-col justify-between ${
                 aiProvider === 'openai'
-                  ? 'bg-emerald-950/40 border-emerald-500/50 text-white'
+                  ? 'bg-emerald-950/50 border-emerald-500 shadow-glow-emerald text-white ring-1 ring-emerald-500'
                   : 'bg-slate-950/40 border-slate-800 text-slate-400 hover:text-slate-200'
               }`}
             >
-              <div className="flex items-center justify-between mb-2">
-                <span className="font-bold text-sm text-emerald-300">OpenAI Whisper + GPT-4o</span>
-                <span className="text-[10px] px-2 py-0.5 rounded-full bg-emerald-500/20 text-emerald-300 border border-emerald-500/30">
-                  Supported
-                </span>
+              <div>
+                <div className="flex items-center justify-between mb-2">
+                  <span className="font-bold text-sm text-emerald-300">OpenAI Stack</span>
+                  <span className="text-[9px] px-2 py-0.5 rounded-full bg-emerald-500/20 text-emerald-300 border border-emerald-500/30">
+                    3 Keys Pool
+                  </span>
+                </div>
+                <p className="text-xs text-slate-400 leading-relaxed">
+                  All work processed via OpenAI Whisper (speech transcription) + GPT-4o (hook detection and titles).
+                </p>
               </div>
-              <p className="text-xs text-slate-400 leading-relaxed">
-                Whisper speech transcription combined with GPT-4o for title suggestions and YouTube SEO.
-              </p>
+              <div className="mt-3 flex items-center gap-1.5 text-[11px] font-semibold text-emerald-400">
+                <span className="w-2 h-2 rounded-full bg-emerald-400"></span>
+                {aiProvider === 'openai' ? 'Currently Selected' : 'Click to select'}
+              </div>
+            </div>
+
+            {/* Option 3: Both (Dual AI Mode) */}
+            <div
+              onClick={() => setAiProvider('both')}
+              className={`p-4 rounded-2xl border cursor-pointer transition-all flex flex-col justify-between ${
+                aiProvider === 'both'
+                  ? 'bg-gradient-to-br from-purple-950/60 via-slate-900 to-emerald-950/60 border-cyan-500 shadow-glow-cyan text-white ring-1 ring-cyan-500'
+                  : 'bg-slate-950/40 border-slate-800 text-slate-400 hover:text-slate-200'
+              }`}
+            >
+              <div>
+                <div className="flex items-center justify-between mb-2">
+                  <span className="font-bold text-sm text-cyan-300 flex items-center gap-1">
+                    ⚡ Both (Dual AI)
+                  </span>
+                  <span className="text-[9px] px-2 py-0.5 rounded-full bg-cyan-500/20 text-cyan-300 border border-cyan-500/30">
+                    Ensemble
+                  </span>
+                </div>
+                <p className="text-xs text-slate-400 leading-relaxed">
+                  Runs BOTH Gemini 1.5 and OpenAI simultaneously. Merges and ranks the most viral moments from both models!
+                </p>
+              </div>
+              <div className="mt-3 flex items-center gap-1.5 text-[11px] font-semibold text-cyan-400">
+                <span className="w-2 h-2 rounded-full bg-cyan-400 animate-pulse"></span>
+                {aiProvider === 'both' ? 'Active: Gemini + OpenAI' : 'Click to activate both'}
+              </div>
             </div>
           </div>
 
-          {/* Gemini Multi-Key Failover Status */}
-          <div className="p-4 rounded-2xl bg-slate-950/80 border border-slate-800 space-y-3">
-            <div className="flex items-center justify-between">
-              <div className="flex items-center gap-2">
-                <div className="w-2.5 h-2.5 rounded-full bg-emerald-400 animate-pulse"></div>
-                <span className="text-xs font-bold text-white">Gemini Multi-Key Failover Pool</span>
-              </div>
-              <span className="text-[10px] font-mono font-bold px-2 py-0.5 rounded-full bg-emerald-950 text-emerald-300 border border-emerald-500/30">
-                10 Keys Active • Auto-Rotation ON
-              </span>
-            </div>
-            <p className="text-[11px] text-slate-400">
-              When a Gemini key reaches its free-tier rate limit or returns an error, the backend automatically fails over to the next healthy key in your pool.
-            </p>
-            <div className="grid grid-cols-2 sm:grid-cols-5 gap-2 pt-1 font-mono text-[10px]">
-              {Array.from({ length: 10 }).map((_, idx) => (
-                <div
-                  key={idx}
-                  className={`p-1.5 rounded-lg border text-center ${
-                    idx === 0
-                      ? 'bg-rose-500/10 border-rose-500/40 text-rose-300 font-bold'
-                      : 'bg-slate-900 border-slate-800 text-slate-400'
-                  }`}
-                >
-                  <span>Key #{idx + 1}</span>
-                  {idx === 0 && <span className="block text-[8px] text-rose-400 font-sans">Active</span>}
+          {/* Active Key Pools Diagnostics */}
+          <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 pt-2">
+            {/* Gemini Multi-Key Failover Status */}
+            <div className="p-4 rounded-2xl bg-slate-950/80 border border-slate-800 space-y-2.5">
+              <div className="flex items-center justify-between">
+                <div className="flex items-center gap-2">
+                  <div className="w-2.5 h-2.5 rounded-full bg-purple-400 animate-pulse"></div>
+                  <span className="text-xs font-bold text-white">Google Gemini Pool</span>
                 </div>
-              ))}
+                <span className="text-[10px] font-mono font-bold px-2 py-0.5 rounded-full bg-purple-950 text-purple-300 border border-purple-500/30">
+                  10 Keys • Auto-Failover
+                </span>
+              </div>
+              <p className="text-[11px] text-slate-400">
+                Automatic round-robin failover when any Gemini key hits free-tier rate limits.
+              </p>
+              <div className="grid grid-cols-5 gap-1.5 pt-1 font-mono text-[9px]">
+                {Array.from({ length: 10 }).map((_, idx) => (
+                  <div
+                    key={idx}
+                    className={`p-1 rounded border text-center ${
+                      idx === 0
+                        ? 'bg-purple-500/20 border-purple-500/50 text-purple-200 font-bold'
+                        : 'bg-slate-900 border-slate-800 text-slate-400'
+                    }`}
+                  >
+                    <span>#{idx + 1}</span>
+                  </div>
+                ))}
+              </div>
+            </div>
+
+            {/* OpenAI Multi-Key Failover Status */}
+            <div className="p-4 rounded-2xl bg-slate-950/80 border border-slate-800 space-y-2.5">
+              <div className="flex items-center justify-between">
+                <div className="flex items-center gap-2">
+                  <div className="w-2.5 h-2.5 rounded-full bg-emerald-400 animate-pulse"></div>
+                  <span className="text-xs font-bold text-white">OpenAI Failover Pool</span>
+                </div>
+                <span className="text-[10px] font-mono font-bold px-2 py-0.5 rounded-full bg-emerald-950 text-emerald-300 border border-emerald-500/30">
+                  3 Keys • Auto-Failover
+                </span>
+              </div>
+              <p className="text-[11px] text-slate-400">
+                Whisper speech & GPT-4o failover across OPENAI_API_KEY, KEY1, and KEY3.
+              </p>
+              <div className="grid grid-cols-3 gap-1.5 pt-1 font-mono text-[9px]">
+                {['KEY (Primary)', 'KEY1', 'KEY3'].map((label, idx) => (
+                  <div
+                    key={idx}
+                    className={`p-1 rounded border text-center ${
+                      idx === 0
+                        ? 'bg-emerald-500/20 border-emerald-500/50 text-emerald-200 font-bold'
+                        : 'bg-slate-900 border-slate-800 text-slate-400'
+                    }`}
+                  >
+                    <span>{label}</span>
+                  </div>
+                ))}
+              </div>
             </div>
           </div>
         </div>

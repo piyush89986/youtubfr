@@ -13,17 +13,23 @@ import {
   ChevronUp,
   Copy,
   Check,
-  Captions
+  Captions,
+  Cpu
 } from 'lucide-react';
 import api from '../../services/api';
+import { useAuth } from '../../context/AuthContext';
 
 export const UploadModal = ({ isOpen, onClose, onUploadComplete }) => {
   if (!isOpen) return null;
 
+  const { user } = useAuth();
   const [dragActive, setDragActive] = useState(false);
   const [file, setFile] = useState(null);
   const [videoTitle, setVideoTitle] = useState('');
   const [clippingMode, setClippingMode] = useState('ai_smart'); // 'ai_smart' | 'fixed'
+  const [selectedAiEngine, setSelectedAiEngine] = useState(
+    user?.settings?.preferredAIProvider || 'gemini'
+  ); // 'gemini' | 'openai' | 'both'
   const [clipDuration, setClipDuration] = useState(60); // 30, 45, 60, 90, 180s
   const [subtitlesEnabled, setSubtitlesEnabled] = useState(true);
   const [uploadProgress, setUploadProgress] = useState(0);
@@ -252,6 +258,7 @@ export const UploadModal = ({ isOpen, onClose, onUploadComplete }) => {
         clippingMode,
         targetDuration: clipDuration,
         subtitlesEnabled,
+        aiProvider: selectedAiEngine,
       });
 
       const confirmRes = await api.post('/videos/confirm', {
@@ -263,6 +270,7 @@ export const UploadModal = ({ isOpen, onClose, onUploadComplete }) => {
         clippingMode,
         targetDuration: clipDuration,
         subtitlesEnabled,
+        aiProvider: selectedAiEngine,
       });
 
       const responseData = confirmRes.data?.data;
@@ -428,6 +436,62 @@ export const UploadModal = ({ isOpen, onClose, onUploadComplete }) => {
                   </p>
                 </button>
               </div>
+
+              {/* AI Engine Model Selection (When AI Smart Clipping is active) */}
+              {clippingMode === 'ai_smart' && (
+                <div className="p-3 rounded-2xl bg-slate-900/60 border border-slate-800/80 space-y-2">
+                  <div className="flex items-center justify-between">
+                    <label className="text-[11px] font-bold text-slate-300 flex items-center gap-1.5">
+                      <Cpu className="w-3.5 h-3.5 text-purple-400" />
+                      <span>AI Engine Model</span>
+                    </label>
+                    <span className="text-[9px] text-slate-500">Pick provider or run both together</span>
+                  </div>
+                  <div className="grid grid-cols-3 gap-2">
+                    <button
+                      type="button"
+                      disabled={uploadState !== 'idle'}
+                      onClick={() => setSelectedAiEngine('gemini')}
+                      className={`p-2 rounded-xl border text-center transition-all ${
+                        selectedAiEngine === 'gemini'
+                          ? 'bg-purple-950/60 border-purple-500 text-purple-200 ring-1 ring-purple-500 font-bold'
+                          : 'bg-slate-950/40 border-slate-800 text-slate-400 hover:text-slate-200'
+                      }`}
+                    >
+                      <div className="text-xs">Google Gemini</div>
+                      <div className="text-[9px] text-purple-400 mt-0.5">10-Key Pool</div>
+                    </button>
+
+                    <button
+                      type="button"
+                      disabled={uploadState !== 'idle'}
+                      onClick={() => setSelectedAiEngine('openai')}
+                      className={`p-2 rounded-xl border text-center transition-all ${
+                        selectedAiEngine === 'openai'
+                          ? 'bg-emerald-950/60 border-emerald-500 text-emerald-200 ring-1 ring-emerald-500 font-bold'
+                          : 'bg-slate-950/40 border-slate-800 text-slate-400 hover:text-slate-200'
+                      }`}
+                    >
+                      <div className="text-xs">OpenAI GPT-4o</div>
+                      <div className="text-[9px] text-emerald-400 mt-0.5">3-Key Pool</div>
+                    </button>
+
+                    <button
+                      type="button"
+                      disabled={uploadState !== 'idle'}
+                      onClick={() => setSelectedAiEngine('both')}
+                      className={`p-2 rounded-xl border text-center transition-all ${
+                        selectedAiEngine === 'both'
+                          ? 'bg-gradient-to-r from-purple-900/60 to-emerald-900/60 border-cyan-400 text-cyan-200 ring-1 ring-cyan-400 font-bold'
+                          : 'bg-slate-950/40 border-slate-800 text-slate-400 hover:text-slate-200'
+                      }`}
+                    >
+                      <div className="text-xs flex items-center justify-center gap-1">⚡ Both (Dual AI)</div>
+                      <div className="text-[9px] text-cyan-400 mt-0.5">Combined Results</div>
+                    </button>
+                  </div>
+                </div>
+              )}
 
               {/* Target Duration Selector */}
               <div>
