@@ -74,6 +74,10 @@ export const AuthProvider = ({ children }) => {
     }
   };
 
+  const refreshUserData = async () => {
+    await fetchCurrentUser();
+  };
+
   const toggleWorker = async (targetState) => {
     try {
       const currentActive = user?.settings?.workerActive !== false;
