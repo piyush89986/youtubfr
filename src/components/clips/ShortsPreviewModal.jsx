@@ -185,21 +185,36 @@ export const ShortsPreviewModal = ({ clip, isOpen, onClose, onSaveMetadata, onSc
               <video
                 ref={videoRef}
                 key={videoCacheKey}
-                src={`${getMediaUrl(clip.storageUrl) || getMediaUrl('/uploads/clips/sample_short.mp4')}?t=${videoCacheKey}`}
+                src={`${getMediaUrl(clip.storageUrl) || 'https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/ForBiggerBlazes.mp4'}?t=${videoCacheKey}`}
                 className="w-full h-full object-cover"
                 autoPlay
                 loop
                 playsInline
                 muted={isMuted}
                 onError={(e) => {
-                  console.warn('Video load error on clip source, falling back to sample short video');
-                  const sampleUrl = `${getMediaUrl('/uploads/clips/sample_short.mp4')}?t=${Date.now()}`;
-                  if (e.target.src !== sampleUrl) {
-                    e.target.src = sampleUrl;
+                  console.warn('Video load error on clip source, falling back to CDN video stream');
+                  const fallbackCdn = 'https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/ForBiggerBlazes.mp4';
+                  if (e.target.src !== fallbackCdn) {
+                    e.target.src = fallbackCdn;
                     e.target.play().catch(() => {});
                   }
                 }}
               />
+
+              {/* Tap to Unmute Overlay Prompt */}
+              {isMuted && (
+                <button
+                  type="button"
+                  onClick={(e) => {
+                    e.stopPropagation();
+                    toggleMute();
+                  }}
+                  className="absolute top-8 left-1/2 -translate-x-1/2 z-30 px-3 py-1 bg-black/80 hover:bg-black/95 backdrop-blur-md rounded-full text-[11px] font-semibold text-white border border-white/20 flex items-center gap-1.5 shadow-xl transition-all hover:scale-105"
+                >
+                  <VolumeX className="w-3.5 h-3.5 text-amber-400" />
+                  <span>Tap for Sound</span>
+                </button>
+              )}
 
               {/* Re-rendering Loader Overlay */}
               {isRerendering && (
