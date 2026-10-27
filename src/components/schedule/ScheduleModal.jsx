@@ -84,19 +84,20 @@ export const ScheduleModal = ({ clip, isOpen, onClose, onConfirmSchedule }) => {
   };
 
   return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/80 backdrop-blur-md animate-fade-in">
-      <div className="relative w-full max-w-lg bg-[#0c101a] border border-slate-800 rounded-3xl shadow-2xl overflow-hidden p-6 sm:p-8">
+    <div className="fixed inset-0 z-50 flex items-center justify-center p-2.5 sm:p-4 bg-black/85 backdrop-blur-md animate-fade-in">
+      <div className="relative w-full max-w-lg bg-[#0c101a] border border-slate-800 rounded-2xl sm:rounded-3xl shadow-2xl overflow-y-auto p-4 sm:p-6 md:p-8 max-h-[94vh] sm:max-h-[92vh]">
         
         {/* Close Button */}
         <button
           onClick={onClose}
-          className="absolute top-4 right-4 p-2 rounded-full bg-slate-800/80 hover:bg-slate-700 text-slate-300 hover:text-white transition-colors"
+          className="absolute top-3 right-3 sm:top-4 sm:right-4 p-2 rounded-full bg-slate-800/80 hover:bg-slate-700 text-slate-300 hover:text-white transition-all active:scale-95 z-20"
+          title="Close Modal"
         >
           <X className="w-5 h-5" />
         </button>
 
-        <div className="flex items-center gap-3 mb-6">
-          <div className="p-3 rounded-2xl bg-rose-500/10 text-rose-400 border border-rose-500/20">
+        <div className="flex items-center gap-3 mb-5">
+          <div className="p-3 rounded-2xl bg-rose-500/10 text-rose-400 border border-rose-500/20 shrink-0">
             <CalendarClock className="w-6 h-6" />
           </div>
           <div>
@@ -145,7 +146,7 @@ export const ScheduleModal = ({ clip, isOpen, onClose, onConfirmSchedule }) => {
           </div>
 
           {/* Date & Time Grid */}
-          <div className="grid grid-cols-2 gap-3">
+          <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
             <div>
               <label className="block text-xs font-semibold text-slate-300 mb-1.5">Publish Date</label>
               <input
@@ -169,7 +170,7 @@ export const ScheduleModal = ({ clip, isOpen, onClose, onConfirmSchedule }) => {
           </div>
 
           {/* Timezone & Privacy */}
-          <div className="grid grid-cols-2 gap-3">
+          <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
             <div>
               <label className="block text-xs font-semibold text-slate-300 mb-1.5">Timezone</label>
               <select
@@ -212,24 +213,24 @@ export const ScheduleModal = ({ clip, isOpen, onClose, onConfirmSchedule }) => {
               type="button"
               disabled={isDirectPublishing || connectedChannels.length === 0}
               onClick={handleDirectPublishNow}
-              className="px-4 py-2.5 rounded-xl text-xs font-bold text-white bg-red-600/90 hover:bg-red-600 border border-red-500/30 flex items-center justify-center gap-1.5 transition-all shadow-sm disabled:opacity-40"
+              className="w-full sm:w-auto px-4 py-2.5 rounded-xl text-xs font-bold text-white bg-red-600/90 hover:bg-red-600 border border-red-500/30 flex items-center justify-center gap-1.5 transition-all shadow-sm disabled:opacity-40"
             >
               <Youtube className="w-3.5 h-3.5" />
               <span>{isDirectPublishing ? 'Uploading directly...' : 'Direct Upload Now (Skip Schedule)'}</span>
             </button>
 
-            <div className="flex items-center justify-end gap-3">
+            <div className="flex items-center justify-end gap-2.5 w-full sm:w-auto">
               <button
                 type="button"
                 onClick={onClose}
-                className="px-4 py-2 rounded-xl text-xs font-semibold text-slate-300 hover:text-white hover:bg-slate-800 transition-colors"
+                className="flex-1 sm:flex-none px-4 py-2 rounded-xl text-xs font-semibold text-slate-300 hover:text-white hover:bg-slate-800 transition-colors text-center"
               >
                 Cancel
               </button>
               <button
                 type="submit"
                 disabled={isSubmitting || isDirectPublishing || connectedChannels.length === 0}
-                className="px-6 py-2.5 rounded-xl text-xs font-bold text-white bg-gradient-to-r from-rose-600 to-red-600 hover:from-rose-500 hover:to-red-500 shadow-glow disabled:opacity-50 transition-all active:scale-95"
+                className="flex-1 sm:flex-none px-6 py-2.5 rounded-xl text-xs font-bold text-white bg-gradient-to-r from-rose-600 to-red-600 hover:from-rose-500 hover:to-red-500 shadow-glow disabled:opacity-50 transition-all active:scale-95 text-center"
               >
                 {isSubmitting ? 'Scheduling...' : 'Confirm Schedule'}
               </button>

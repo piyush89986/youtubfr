@@ -173,10 +173,10 @@ export const ChannelsPage = () => {
                 </div>
               </div>
 
-              <div className="flex items-center justify-between pt-2">
+              <div className="flex flex-wrap items-center justify-between gap-2.5 pt-2">
                 <button
                   onClick={() => handleTestUpload(ch.channelId)}
-                  className="flex items-center gap-1.5 px-3 py-1.5 rounded-xl text-xs font-semibold bg-slate-800 hover:bg-slate-700 text-slate-200 transition-colors"
+                  className="flex-1 sm:flex-none flex items-center justify-center gap-1.5 px-3 py-2 rounded-xl text-xs font-semibold bg-slate-800 hover:bg-slate-700 text-slate-200 transition-colors"
                 >
                   <KeyRound className="w-3.5 h-3.5 text-amber-400" />
                   <span>Verify Upload Auth</span>
@@ -184,7 +184,7 @@ export const ChannelsPage = () => {
 
                 <button
                   onClick={() => handleDisconnect(ch.channelId || ch._id)}
-                  className="flex items-center gap-1.5 px-3.5 py-2 rounded-xl text-xs font-bold text-rose-400 bg-rose-500/10 hover:bg-rose-500/25 border border-rose-500/20 hover:border-rose-500/40 transition-all hover:scale-105 active:scale-95"
+                  className="flex-1 sm:flex-none flex items-center justify-center gap-1.5 px-3.5 py-2 rounded-xl text-xs font-bold text-rose-400 bg-rose-500/10 hover:bg-rose-500/25 border border-rose-500/20 hover:border-rose-500/40 transition-all hover:scale-105 active:scale-95"
                 >
                   <Trash2 className="w-3.5 h-3.5" />
                   <span>Disconnect Channel</span>

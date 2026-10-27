@@ -83,7 +83,7 @@ export const ClipsPage = ({ onPreviewClip, onScheduleClip }) => {
         </div>
 
         {/* Filter Tabs */}
-        <div className="flex items-center gap-1.5 p-1 rounded-2xl bg-slate-900 border border-slate-800">
+        <div className="flex items-center gap-1.5 p-1 rounded-2xl bg-slate-900 border border-slate-800 overflow-x-auto max-w-full">
           {[
             { id: 'all', label: 'All Shorts' },
             { id: 'draft', label: 'Drafts' },
@@ -93,7 +93,7 @@ export const ClipsPage = ({ onPreviewClip, onScheduleClip }) => {
             <button
               key={tab.id}
               onClick={() => setFilter(tab.id)}
-              className={`px-3 py-1.5 rounded-xl text-xs font-semibold transition-all ${filter === tab.id
+              className={`px-3 py-1.5 rounded-xl text-xs font-semibold whitespace-nowrap transition-all ${filter === tab.id
                 ? 'bg-rose-600 text-white shadow-glow'
                 : 'text-slate-400 hover:text-white'
                 }`}
@@ -177,7 +177,7 @@ export const ClipsPage = ({ onPreviewClip, onScheduleClip }) => {
               </div>
 
               {/* Actions Footer */}
-              <div className="p-4 pt-2 border-t border-slate-800/80 flex items-center justify-between">
+              <div className="p-3.5 sm:p-4 pt-2 border-t border-slate-800/80 flex flex-wrap items-center justify-between gap-2">
                 <span
                   className={`text-[9px] font-bold uppercase tracking-wider px-2 py-0.5 rounded-full border ${clip.publishingStatus === 'published'
                     ? 'bg-emerald-950/60 text-emerald-300 border-emerald-500/30'
@@ -189,7 +189,7 @@ export const ClipsPage = ({ onPreviewClip, onScheduleClip }) => {
                   {clip.publishingStatus || 'draft'}
                 </span>
 
-                <div className="flex items-center gap-1.5">
+                <div className="flex flex-wrap items-center gap-1.5">
                   <button
                     onClick={() => handleDelete(clip._id)}
                     className="p-1.5 text-slate-500 hover:text-rose-400 transition-colors"

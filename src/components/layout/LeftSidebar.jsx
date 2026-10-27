@@ -57,42 +57,43 @@ export const LeftSidebar = ({
 
   return (
     <aside 
-      className={`fixed top-0 left-0 bottom-0 z-40 w-72 h-screen bg-[#070b13]/95 backdrop-blur-2xl border-r border-slate-800/80 flex flex-col justify-between transition-transform duration-300 ease-in-out select-none shadow-2xl ${
+      className={`fixed top-0 left-0 bottom-0 z-50 w-72 sm:w-80 max-w-[85vw] h-screen bg-[#070b13]/95 backdrop-blur-2xl border-r border-slate-800/80 flex flex-col justify-between transition-transform duration-300 ease-in-out select-none shadow-2xl ${
         isOpen ? 'translate-x-0' : '-translate-x-full'
       }`}
     >
       {/* Top Header & Brand */}
-      <div className="p-5 border-b border-slate-800/60 flex items-center justify-between">
+      <div className="p-4 sm:p-5 border-b border-slate-800/60 flex items-center justify-between">
         <div 
           onClick={() => onNavigate('dashboard')} 
-          className="flex items-center gap-3 cursor-pointer group"
+          className="flex items-center gap-3 cursor-pointer group min-w-0"
         >
-          <div className="relative flex items-center justify-center w-10 h-10 rounded-xl bg-gradient-to-tr from-rose-600 via-rose-500 to-red-600 shadow-glow text-white font-bold group-hover:scale-105 transition-transform">
+          <div className="relative flex items-center justify-center w-10 h-10 rounded-xl bg-gradient-to-tr from-rose-600 via-rose-500 to-red-600 shadow-glow text-white font-bold group-hover:scale-105 transition-transform shrink-0">
             <Youtube className="w-5 h-5 text-white" />
             <div className="absolute -top-1 -right-1 w-2.5 h-2.5 bg-amber-400 rounded-full animate-ping opacity-75"></div>
             <div className="absolute -top-1 -right-1 w-2.5 h-2.5 bg-amber-400 rounded-full"></div>
           </div>
-          <div>
+          <div className="min-w-0">
             <div className="flex items-center gap-1.5">
-              <span className="text-base font-extrabold tracking-tight text-white group-hover:text-rose-300 transition-colors">
+              <span className="text-base font-extrabold tracking-tight text-white group-hover:text-rose-300 transition-colors truncate">
                 ShortsCraft
               </span>
-              <span className="text-[10px] font-bold px-1.5 py-0.5 rounded-full bg-rose-500/20 text-rose-400 border border-rose-500/30">
+              <span className="text-[10px] font-bold px-1.5 py-0.5 rounded-full bg-rose-500/20 text-rose-400 border border-rose-500/30 shrink-0">
                 AI
               </span>
             </div>
-            <p className="text-[10px] text-slate-400 font-medium">Long-to-Shorts Automation</p>
+            <p className="text-[10px] text-slate-400 font-medium truncate">Long-to-Shorts Automation</p>
           </div>
         </div>
 
         {/* Hide / Remove Sidebar Button */}
         <button
           onClick={onClose}
-          className="p-1.5 rounded-xl bg-slate-900/80 hover:bg-slate-800 text-slate-400 hover:text-white border border-slate-800 transition-all hover:scale-105"
-          title="Remove / Hide Sidebar"
+          className="p-2 rounded-xl bg-slate-900/80 hover:bg-slate-800 text-slate-400 hover:text-white border border-slate-800 transition-all hover:scale-105 active:scale-95 shrink-0 ml-2"
+          title="Close Navigation"
+          aria-label="Close Navigation"
         >
-          <ChevronLeft className="w-4 h-4 hidden sm:block" />
-          <X className="w-4 h-4 sm:hidden" />
+          <ChevronLeft className="w-4 h-4 hidden lg:block" />
+          <X className="w-4 h-4 lg:hidden" />
         </button>
       </div>
 

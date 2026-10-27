@@ -150,7 +150,7 @@ export const SchedulePage = ({ onPreviewClip, onNavigate }) => {
                   </div>
                 </div>
 
-                <div className="flex items-center gap-3 justify-end">
+                <div className="flex items-center gap-3 justify-between sm:justify-end w-full sm:w-auto border-t sm:border-t-0 pt-2 sm:pt-0 border-slate-800/60">
                   <span
                     className={`text-[10px] uppercase font-bold tracking-wider px-2.5 py-1 rounded-full border ${
                       item.status === 'completed'

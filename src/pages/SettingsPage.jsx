@@ -57,7 +57,7 @@ export const SettingsPage = () => {
 
       <form onSubmit={handleSave} className="space-y-6">
         {/* AI Provider Section */}
-        <div className="p-6 rounded-3xl border border-slate-800 bg-slate-900/40 backdrop-blur-xl space-y-4">
+        <div className="p-4 sm:p-6 rounded-2xl sm:rounded-3xl border border-slate-800 bg-slate-900/40 backdrop-blur-xl space-y-4">
           <div className="flex items-center gap-2.5">
             <div className="p-2 rounded-xl bg-purple-500/10 text-purple-400 border border-purple-500/20">
               <Sparkles className="w-5 h-5" />
@@ -215,7 +215,7 @@ export const SettingsPage = () => {
         </div>
 
         {/* Schedule Defaults */}
-        <div className="p-6 rounded-3xl border border-slate-800 bg-slate-900/40 backdrop-blur-xl space-y-4">
+        <div className="p-4 sm:p-6 rounded-2xl sm:rounded-3xl border border-slate-800 bg-slate-900/40 backdrop-blur-xl space-y-4">
           <div className="flex items-center gap-2.5">
             <div className="p-2 rounded-xl bg-rose-500/10 text-rose-400 border border-rose-500/20">
               <Clock className="w-5 h-5" />
@@ -281,7 +281,7 @@ export const SettingsPage = () => {
           <button
             type="submit"
             disabled={saving}
-            className="flex items-center gap-2 px-6 py-2.5 rounded-xl text-xs font-bold text-white bg-gradient-to-r from-rose-600 to-red-600 hover:from-rose-500 hover:to-red-500 shadow-glow transition-all active:scale-95 disabled:opacity-50"
+            className="w-full sm:w-auto flex items-center justify-center gap-2 px-6 py-2.5 rounded-xl text-xs font-bold text-white bg-gradient-to-r from-rose-600 to-red-600 hover:from-rose-500 hover:to-red-500 shadow-glow transition-all active:scale-95 disabled:opacity-50"
           >
             {saved ? <Check className="w-4 h-4 text-emerald-400" /> : <Save className="w-4 h-4" />}
             <span>{saved ? 'Saved' : saving ? 'Saving...' : 'Save Settings'}</span>

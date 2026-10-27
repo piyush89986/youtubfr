@@ -162,20 +162,22 @@ export const ShortsPreviewModal = ({ clip, isOpen, onClose, onSaveMetadata, onSc
   };
 
   return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/80 backdrop-blur-md animate-fade-in">
-      <div className="relative w-full max-w-4xl bg-[#0b0f19] border border-slate-800 rounded-3xl shadow-2xl overflow-hidden flex flex-col md:flex-row max-h-[92vh]">
+    <div className="fixed inset-0 z-50 flex items-center justify-center p-2 sm:p-4 bg-black/85 backdrop-blur-md animate-fade-in">
+      <div className="relative w-full max-w-4xl bg-[#0b0f19] border border-slate-800 rounded-2xl sm:rounded-3xl shadow-2xl overflow-hidden flex flex-col lg:flex-row max-h-[94vh] sm:max-h-[92vh]">
         
         {/* Close Button */}
         <button
           onClick={onClose}
-          className="absolute top-4 right-4 z-20 p-2 rounded-full bg-slate-800/80 hover:bg-slate-700 text-slate-300 hover:text-white transition-colors"
+          className="absolute top-3 right-3 sm:top-4 sm:right-4 z-30 p-2 rounded-full bg-slate-800/90 hover:bg-slate-700 text-slate-300 hover:text-white transition-all active:scale-95 shadow-lg border border-slate-700/50"
+          title="Close Preview"
+          aria-label="Close Preview"
         >
           <X className="w-5 h-5" />
         </button>
 
         {/* Left Column: 9:16 Vertical Video Phone Frame Simulator */}
-        <div className="w-full md:w-[380px] bg-slate-950 flex flex-col items-center justify-center p-6 border-b md:border-b-0 md:border-r border-slate-800 shrink-0">
-          <div className="relative w-[240px] h-[480px] sm:w-[260px] sm:h-[520px] rounded-[36px] border-4 border-slate-700/80 bg-black overflow-hidden shadow-2xl flex flex-col justify-between">
+        <div className="w-full lg:w-[340px] bg-slate-950 flex flex-col items-center justify-center p-4 sm:p-6 border-b lg:border-b-0 lg:border-r border-slate-800 shrink-0">
+          <div className="relative w-[180px] h-[340px] sm:w-[220px] sm:h-[420px] lg:w-[240px] lg:h-[480px] rounded-[28px] sm:rounded-[36px] border-4 border-slate-700/80 bg-black overflow-hidden shadow-2xl flex flex-col justify-between mx-auto">
             
             {/* Top Phone Notch */}
             <div className="absolute top-2 left-1/2 -translate-x-1/2 w-20 h-4 bg-slate-800 rounded-full z-20"></div>
@@ -305,7 +307,7 @@ export const ShortsPreviewModal = ({ clip, isOpen, onClose, onSaveMetadata, onSc
         </div>
 
         {/* Right Column: Metadata & Subtitle Studio Editor */}
-        <div className="flex-1 p-6 sm:p-8 overflow-y-auto space-y-5 flex flex-col justify-between">
+        <div className="flex-1 p-4 sm:p-6 lg:p-8 overflow-y-auto space-y-4 sm:space-y-5 flex flex-col justify-between">
           <div className="space-y-5">
             <div className="flex items-center justify-between">
               <div className="flex items-center gap-2">

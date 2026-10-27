@@ -303,14 +303,14 @@ export const UploadModal = ({ isOpen, onClose, onUploadComplete }) => {
   };
 
   return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/85 backdrop-blur-md animate-fade-in">
-      <div className="relative w-full max-w-2xl bg-[#0c101a] border border-slate-800 rounded-3xl shadow-2xl overflow-hidden p-6 sm:p-8 max-h-[92vh] flex flex-col">
+    <div className="fixed inset-0 z-50 flex items-center justify-center p-2.5 sm:p-4 md:p-6 bg-black/85 backdrop-blur-md animate-fade-in">
+      <div className="relative w-full max-w-2xl bg-[#0c101a] border border-slate-800 rounded-2xl sm:rounded-3xl shadow-2xl overflow-hidden p-4 sm:p-6 md:p-8 max-h-[94vh] sm:max-h-[92vh] flex flex-col">
         
         {/* Close Button */}
         <button
           onClick={onClose}
           disabled={uploadState === 'uploading' || uploadState === 'signing'}
-          className="absolute top-4 right-4 p-2 rounded-full bg-slate-800/80 hover:bg-slate-700 text-slate-300 hover:text-white transition-colors disabled:opacity-30"
+          className="absolute top-3 right-3 sm:top-4 sm:right-4 p-2 rounded-full bg-slate-800/80 hover:bg-slate-700 text-slate-300 hover:text-white transition-all active:scale-95 disabled:opacity-30 z-20"
           title="Close Modal"
         >
           <X className="w-5 h-5" />
@@ -399,13 +399,13 @@ export const UploadModal = ({ isOpen, onClose, onUploadComplete }) => {
               </div>
 
               {/* Clipping Mode Selector */}
-              <div className="grid grid-cols-2 gap-3">
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-2.5 sm:gap-3">
                 <button
                   type="button"
                   onClick={() => setClippingMode('ai_smart')}
                   className={`p-3 rounded-2xl border text-left transition-all ${
                     clippingMode === 'ai_smart'
-                      ? 'bg-rose-500/10 border-rose-500/40 text-white'
+                      ? 'bg-rose-500/10 border-rose-500/40 text-white shadow-glow'
                       : 'bg-slate-900/40 border-slate-800 text-slate-400 hover:text-slate-200'
                   }`}
                 >
@@ -423,7 +423,7 @@ export const UploadModal = ({ isOpen, onClose, onUploadComplete }) => {
                   onClick={() => setClippingMode('fixed')}
                   className={`p-3 rounded-2xl border text-left transition-all ${
                     clippingMode === 'fixed'
-                      ? 'bg-indigo-500/10 border-indigo-500/40 text-white'
+                      ? 'bg-indigo-500/10 border-indigo-500/40 text-white shadow-glow'
                       : 'bg-slate-900/40 border-slate-800 text-slate-400 hover:text-slate-200'
                   }`}
                 >
@@ -447,14 +447,14 @@ export const UploadModal = ({ isOpen, onClose, onUploadComplete }) => {
                     </label>
                     <span className="text-[9px] text-slate-500">Pick provider or run both together</span>
                   </div>
-                  <div className="grid grid-cols-3 gap-2">
+                  <div className="grid grid-cols-1 sm:grid-cols-3 gap-2">
                     <button
                       type="button"
                       disabled={uploadState !== 'idle'}
                       onClick={() => setSelectedAiEngine('gemini')}
-                      className={`p-2 rounded-xl border text-center transition-all ${
+                      className={`p-2.5 rounded-xl border text-center transition-all ${
                         selectedAiEngine === 'gemini'
-                          ? 'bg-purple-950/60 border-purple-500 text-purple-200 ring-1 ring-purple-500 font-bold'
+                          ? 'bg-purple-950/60 border-purple-500 text-purple-200 ring-1 ring-purple-500 font-bold shadow-glow'
                           : 'bg-slate-950/40 border-slate-800 text-slate-400 hover:text-slate-200'
                       }`}
                     >
@@ -466,9 +466,9 @@ export const UploadModal = ({ isOpen, onClose, onUploadComplete }) => {
                       type="button"
                       disabled={uploadState !== 'idle'}
                       onClick={() => setSelectedAiEngine('openai')}
-                      className={`p-2 rounded-xl border text-center transition-all ${
+                      className={`p-2.5 rounded-xl border text-center transition-all ${
                         selectedAiEngine === 'openai'
-                          ? 'bg-emerald-950/60 border-emerald-500 text-emerald-200 ring-1 ring-emerald-500 font-bold'
+                          ? 'bg-emerald-950/60 border-emerald-500 text-emerald-200 ring-1 ring-emerald-500 font-bold shadow-glow'
                           : 'bg-slate-950/40 border-slate-800 text-slate-400 hover:text-slate-200'
                       }`}
                     >
@@ -480,9 +480,9 @@ export const UploadModal = ({ isOpen, onClose, onUploadComplete }) => {
                       type="button"
                       disabled={uploadState !== 'idle'}
                       onClick={() => setSelectedAiEngine('both')}
-                      className={`p-2 rounded-xl border text-center transition-all ${
+                      className={`p-2.5 rounded-xl border text-center transition-all ${
                         selectedAiEngine === 'both'
-                          ? 'bg-gradient-to-r from-purple-900/60 to-emerald-900/60 border-cyan-400 text-cyan-200 ring-1 ring-cyan-400 font-bold'
+                          ? 'bg-gradient-to-r from-purple-900/60 to-emerald-900/60 border-cyan-400 text-cyan-200 ring-1 ring-cyan-400 font-bold shadow-glow'
                           : 'bg-slate-950/40 border-slate-800 text-slate-400 hover:text-slate-200'
                       }`}
                     >
@@ -498,15 +498,15 @@ export const UploadModal = ({ isOpen, onClose, onUploadComplete }) => {
                 <label className="block text-xs font-semibold text-slate-300 mb-1.5">
                   Target Short Duration ({clipDuration}s)
                 </label>
-                <div className="flex items-center gap-2">
+                <div className="grid grid-cols-5 gap-1.5 sm:gap-2">
                   {[30, 45, 60, 90, 180].map((dur) => (
                     <button
                       key={dur}
                       type="button"
                       onClick={() => setClipDuration(dur)}
-                      className={`flex-1 py-1.5 rounded-lg text-xs font-mono font-semibold transition-colors ${
+                      className={`py-2 px-1 rounded-xl text-xs font-mono font-bold transition-all text-center ${
                         clipDuration === dur
-                          ? 'bg-rose-600 text-white'
+                          ? 'bg-rose-600 text-white shadow-glow'
                           : 'bg-slate-800 text-slate-400 hover:bg-slate-700'
                       }`}
                     >
