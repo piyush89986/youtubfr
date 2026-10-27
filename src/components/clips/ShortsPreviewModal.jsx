@@ -185,7 +185,7 @@ export const ShortsPreviewModal = ({ clip, isOpen, onClose, onSaveMetadata, onSc
               <video
                 ref={videoRef}
                 key={videoCacheKey}
-                src={`${getMediaUrl(clip.storageUrl) || 'http://localhost:5000/uploads/clips/sample_short.mp4'}?t=${videoCacheKey}`}
+                src={`${getMediaUrl(clip.storageUrl) || getMediaUrl('/uploads/clips/sample_short.mp4')}?t=${videoCacheKey}`}
                 className="w-full h-full object-cover"
                 autoPlay
                 loop
@@ -193,7 +193,7 @@ export const ShortsPreviewModal = ({ clip, isOpen, onClose, onSaveMetadata, onSc
                 muted={isMuted}
                 onError={(e) => {
                   console.warn('Video load error on clip source, falling back to sample short video');
-                  const sampleUrl = `http://localhost:5000/uploads/clips/sample_short.mp4?t=${Date.now()}`;
+                  const sampleUrl = `${getMediaUrl('/uploads/clips/sample_short.mp4')}?t=${Date.now()}`;
                   if (e.target.src !== sampleUrl) {
                     e.target.src = sampleUrl;
                     e.target.play().catch(() => {});

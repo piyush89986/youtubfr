@@ -28,6 +28,26 @@ const MainApplication = () => {
   const [previewClip, setPreviewClip] = useState(null);
   const [scheduleClip, setScheduleClip] = useState(null);
 
+  // Handle OAuth callback redirect parameters on mount
+  React.useEffect(() => {
+    const params = new URLSearchParams(window.location.search);
+    const tabParam = params.get('tab');
+    const connectedParam = params.get('connected');
+    const oauthError = params.get('oauth_error');
+
+    if (tabParam) {
+      setCurrentTab(tabParam);
+    }
+    if (connectedParam === 'true') {
+      toast.success('YouTube Channel connected successfully!');
+      window.history.replaceState({}, document.title, window.location.pathname);
+    }
+    if (oauthError) {
+      toast.error(`YouTube connection failed: ${decodeURIComponent(oauthError)}`);
+      window.history.replaceState({}, document.title, window.location.pathname);
+    }
+  }, []);
+
   if (loading) {
     return (
       <div className="min-h-screen bg-[#080b11] flex flex-col items-center justify-center text-slate-400 gap-3">
