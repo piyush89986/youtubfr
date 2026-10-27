@@ -31,7 +31,7 @@ export const UploadModal = ({ isOpen, onClose, onUploadComplete }) => {
     user?.settings?.preferredAIProvider || 'gemini'
   ); // 'gemini' | 'openai' | 'both'
   const [clipDuration, setClipDuration] = useState(60); // 30, 45, 60, 90, 180s
-  const [subtitlesEnabled, setSubtitlesEnabled] = useState(true);
+  const [subtitlesEnabled, setSubtitlesEnabled] = useState(false);
   const [uploadProgress, setUploadProgress] = useState(0);
   const [uploadState, setUploadState] = useState('idle'); // 'idle' | 'signing' | 'uploading' | 'confirming' | 'completed' | 'error'
   const [errorMessage, setErrorMessage] = useState('');
