@@ -8,17 +8,39 @@ import {
   CheckCircle2, 
   AlertCircle,
   Clock,
-  Sparkles
+  Sparkles,
+  Cpu
 } from 'lucide-react';
 import { YoutubeIcon as Youtube } from '../components/common/YoutubeIcon';
 import api from '../services/api';
 import { useToast } from '../context/ToastContext';
+import { useAuth } from '../context/AuthContext';
 import { getMediaUrl } from '../utils/mediaUtils';
 
 export const SchedulePage = ({ onPreviewClip, onNavigate }) => {
+  const { workerActive, toggleWorker } = useAuth();
   const [schedules, setSchedules] = useState([]);
   const [loading, setLoading] = useState(true);
+  const [isTogglingWorker, setIsTogglingWorker] = useState(false);
   const toast = useToast();
+
+  const handleToggleWorker = async () => {
+    setIsTogglingWorker(true);
+    try {
+      const res = await toggleWorker(!workerActive);
+      const next = !workerActive;
+      toast.success(
+        next 
+          ? `Worker active! ${res.data?.backfilledCount > 0 ? `${res.data.backfilledCount} clips scheduled day-by-day.` : 'Day-by-Day auto-scheduler running.'}`
+          : 'Worker paused. Future scheduled uploads placed on hold.'
+      );
+      fetchSchedules();
+    } catch (err) {
+      toast.error('Failed to toggle worker: ' + (err.response?.data?.message || err.message));
+    } finally {
+      setIsTogglingWorker(false);
+    }
+  };
 
   const fetchSchedules = async () => {
     try {
@@ -74,8 +96,50 @@ export const SchedulePage = ({ onPreviewClip, onNavigate }) => {
         <div>
           <h1 className="text-2xl font-black text-white tracking-tight">Auto-Scheduler</h1>
           <p className="text-xs text-slate-400 mt-1">
-            Persistent queue powered by BullMQ & Redis. Idempotency guarantees prevent duplicate uploads.
+            Day-by-Day scheduling pipeline. Uploaded clips are automatically distributed 1-per-day into the future.
           </p>
+        </div>
+
+        {/* Worker Switch */}
+        <div className="flex items-center gap-3">
+          <button
+            onClick={handleToggleWorker}
+            disabled={isTogglingWorker}
+            className={`flex items-center gap-2.5 px-4 py-2.5 rounded-2xl text-xs font-bold border transition-all active:scale-95 cursor-pointer shadow-lg ${
+              workerActive
+                ? 'bg-emerald-950/40 border-emerald-500/50 text-emerald-300 shadow-glow'
+                : 'bg-slate-900 border-slate-800 text-slate-400 hover:text-white'
+            }`}
+            title={workerActive ? 'Worker is ON. Click to pause auto-scheduling.' : 'Worker is OFF. Click to start day-by-day auto-scheduling.'}
+          >
+            <div className="relative flex items-center justify-center">
+              <Cpu className={`w-4 h-4 ${workerActive ? 'text-emerald-400' : 'text-slate-500'}`} />
+              {workerActive && (
+                <span className="absolute -top-1 -right-1 w-2 h-2 rounded-full bg-emerald-400 animate-ping"></span>
+              )}
+            </div>
+            <span>Auto-Worker: {workerActive ? 'ON (Day-by-Day Active)' : 'OFF (Paused)'}</span>
+            <div className={`w-2 h-2 rounded-full ${workerActive ? 'bg-emerald-400' : 'bg-slate-600'}`}></div>
+          </button>
+        </div>
+      </div>
+
+      {/* Auto-Scheduler Guarantee Banner */}
+      <div className="p-4 rounded-2xl bg-gradient-to-r from-emerald-950/30 via-slate-900 to-indigo-950/20 border border-emerald-500/30 flex flex-col md:flex-row items-start md:items-center justify-between gap-3 shadow-lg">
+        <div className="flex items-center gap-3">
+          <div className="p-2.5 rounded-xl bg-emerald-500/10 text-emerald-400 border border-emerald-500/20 shrink-0">
+            <Sparkles className="w-5 h-5" />
+          </div>
+          <div>
+            <h4 className="text-xs font-bold text-white">Zero-Gap Guarantee Active</h4>
+            <p className="text-[11px] text-slate-400">
+              When you upload a video, all extracted clips are automatically queued across consecutive open days. Koi bhi din bina upload ke miss nahi hoga.
+            </p>
+          </div>
+        </div>
+        <div className="flex items-center gap-2 text-xs font-mono font-bold text-emerald-400 shrink-0">
+          <CheckCircle2 className="w-4 h-4" />
+          <span>Consecutive Days Pipeline</span>
         </div>
       </div>
 

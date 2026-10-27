@@ -1,5 +1,6 @@
 import React, { createContext, useContext, useState, useEffect } from 'react';
 import { authService } from '../services/authService';
+import api from '../services/api';
 
 const AuthContext = createContext(null);
 
@@ -73,8 +74,30 @@ export const AuthProvider = ({ children }) => {
     }
   };
 
-  const refreshUserData = async () => {
-    await fetchCurrentUser();
+  const toggleWorker = async (targetState) => {
+    try {
+      const currentActive = user?.settings?.workerActive !== false;
+      const nextState = targetState !== undefined ? Boolean(targetState) : !currentActive;
+      const res = await api.patch('/dashboard/worker-toggle', { workerActive: nextState });
+      
+      setUser((prev) => {
+        const updated = {
+          ...prev,
+          settings: {
+            ...prev?.settings,
+            workerActive: nextState,
+            autoSchedulerEnabled: nextState,
+          },
+        };
+        localStorage.setItem('user', JSON.stringify(updated));
+        return updated;
+      });
+
+      return res.data;
+    } catch (err) {
+      console.error('Failed to toggle worker:', err);
+      throw err;
+    }
   };
 
   return (
@@ -87,6 +110,8 @@ export const AuthProvider = ({ children }) => {
         register,
         logout,
         refreshUserData,
+        toggleWorker,
+        workerActive: user?.settings?.workerActive !== false,
         isAuthenticated: !!user,
       }}
     >

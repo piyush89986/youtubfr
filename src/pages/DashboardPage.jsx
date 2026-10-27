@@ -5,7 +5,8 @@ import { UpcomingSchedule } from '../components/dashboard/UpcomingSchedule';
 import { RecentShorts } from '../components/dashboard/RecentShorts';
 import { dashboardService } from '../services/dashboardService';
 import { useAuth } from '../context/AuthContext';
-import { Upload, Sparkles, RefreshCw, Calendar, ArrowRight } from 'lucide-react';
+import { useToast } from '../context/ToastContext';
+import { Upload, Sparkles, RefreshCw, Calendar, ArrowRight, Cpu } from 'lucide-react';
 import { YoutubeIcon as Youtube } from '../components/common/YoutubeIcon';
 
 export const DashboardPage = ({ 
@@ -14,10 +15,29 @@ export const DashboardPage = ({
   onScheduleClip, 
   onNavigate 
 }) => {
-  const { user, connectedChannels } = useAuth();
+  const { user, connectedChannels, workerActive, toggleWorker } = useAuth();
+  const toast = useToast();
   const [stats, setStats] = useState(null);
   const [loading, setLoading] = useState(true);
   const [refreshing, setRefreshing] = useState(false);
+  const [isTogglingWorker, setIsTogglingWorker] = useState(false);
+
+  const handleToggleWorker = async () => {
+    setIsTogglingWorker(true);
+    try {
+      const res = await toggleWorker(!workerActive);
+      const next = !workerActive;
+      toast.success(
+        next 
+          ? `Worker started! ${res.data?.backfilledCount > 0 ? `${res.data.backfilledCount} clips scheduled day-by-day.` : 'Day-by-Day auto-scheduler active.'}`
+          : 'Worker paused. Clips will save in drafts.'
+      );
+    } catch (err) {
+      toast.error('Failed to update worker status: ' + (err.response?.data?.message || err.message));
+    } finally {
+      setIsTogglingWorker(false);
+    }
+  };
 
   const fetchStats = async () => {
     try {
@@ -68,6 +88,26 @@ export const DashboardPage = ({
           </div>
 
           <div className="flex flex-wrap items-center gap-3">
+            {/* Auto-Worker Engine ON/OFF Button */}
+            <button
+              onClick={handleToggleWorker}
+              disabled={isTogglingWorker}
+              className={`flex items-center gap-2 px-3.5 py-2.5 rounded-xl text-xs font-bold border transition-all active:scale-95 cursor-pointer ${
+                workerActive 
+                  ? 'bg-emerald-950/50 border-emerald-500/50 text-emerald-300 shadow-glow' 
+                  : 'bg-slate-900 border-slate-800 text-slate-400 hover:text-white'
+              }`}
+              title={workerActive ? 'Worker is ON. Click to pause auto-scheduling.' : 'Worker is OFF. Click to start day-by-day auto-scheduling.'}
+            >
+              <div className="relative flex items-center justify-center">
+                <Cpu className={`w-4 h-4 ${workerActive ? 'text-emerald-400' : 'text-slate-500'}`} />
+                {workerActive && (
+                  <span className="absolute -top-1 -right-1 w-2 h-2 rounded-full bg-emerald-400 animate-ping"></span>
+                )}
+              </div>
+              <span>Worker: {workerActive ? 'ON (Auto-Schedule)' : 'OFF (Paused)'}</span>
+            </button>
+
             {!hasConnectedChannel && (
               <button
                 onClick={() => onNavigate('channels')}

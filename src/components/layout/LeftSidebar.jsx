@@ -15,7 +15,8 @@ import {
   X,
   AlertCircle,
   HardDrive,
-  Unlink
+  Unlink,
+  Cpu
 } from 'lucide-react';
 import { YoutubeIcon as Youtube } from '../common/YoutubeIcon';
 
@@ -27,10 +28,28 @@ export const LeftSidebar = ({
   onOpenUpload, 
   metrics 
 }) => {
-  const { user, connectedChannels, logout, refreshUserData } = useAuth();
+  const { user, connectedChannels, logout, refreshUserData, workerActive, toggleWorker } = useAuth();
   const toast = useToast();
   const [disconnecting, setDisconnecting] = useState(false);
+  const [isTogglingWorker, setIsTogglingWorker] = useState(false);
   const primaryChannel = connectedChannels.length > 0 ? connectedChannels[0] : null;
+
+  const handleToggleWorker = async () => {
+    setIsTogglingWorker(true);
+    try {
+      const res = await toggleWorker(!workerActive);
+      const next = !workerActive;
+      toast.success(
+        next 
+          ? `Worker started! ${res.data?.backfilledCount > 0 ? `${res.data.backfilledCount} clips scheduled day-by-day.` : 'Day-by-Day auto-scheduler active.'}`
+          : 'Worker paused. Clips will save in drafts.'
+      );
+    } catch (err) {
+      toast.error('Failed to update worker status: ' + (err.response?.data?.message || err.message));
+    } finally {
+      setIsTogglingWorker(false);
+    }
+  };
 
   const handleDisconnectChannel = async (channelId) => {
     if (!window.confirm('Disconnect this YouTube Channel and revoke access permissions?')) return;
@@ -199,6 +218,63 @@ export const LeftSidebar = ({
               </div>
             )}
           </div>
+        </div>
+
+        {/* Worker & Day-by-Day Auto-Scheduler Switch Card */}
+        <div className={`p-3.5 rounded-2xl border transition-all space-y-2.5 ${
+          workerActive 
+            ? 'bg-gradient-to-br from-emerald-950/40 via-slate-900 to-[#06140e] border-emerald-500/40 shadow-glow' 
+            : 'bg-slate-950/70 border-slate-800'
+        }`}>
+          <div className="flex items-center justify-between">
+            <div className="flex items-center gap-2">
+              <div className={`relative flex items-center justify-center w-7 h-7 rounded-xl ${
+                workerActive ? 'bg-emerald-500/20 text-emerald-400' : 'bg-slate-800 text-slate-500'
+              }`}>
+                <Cpu className="w-4 h-4" />
+                {workerActive && (
+                  <span className="absolute -top-0.5 -right-0.5 w-2 h-2 rounded-full bg-emerald-400 animate-ping"></span>
+                )}
+              </div>
+              <div>
+                <p className="text-xs font-bold text-white leading-tight">Auto-Worker</p>
+                <p className="text-[10px] text-slate-400">Day-by-Day Schedule</p>
+              </div>
+            </div>
+
+            {/* Interactive Switch */}
+            <button
+              type="button"
+              onClick={handleToggleWorker}
+              disabled={isTogglingWorker}
+              className={`relative inline-flex h-6 w-11 items-center rounded-full transition-colors focus:outline-none cursor-pointer ${
+                workerActive ? 'bg-emerald-500' : 'bg-slate-800'
+              }`}
+              title={workerActive ? 'Pause Worker (Stop auto-scheduling)' : 'Start Worker (Enable day-by-day auto-scheduling)'}
+            >
+              <span
+                className={`inline-block h-4 w-4 transform rounded-full bg-white shadow-md transition-transform ${
+                  workerActive ? 'translate-x-6' : 'translate-x-1'
+                }`}
+              />
+            </button>
+          </div>
+
+          <div className="flex items-center justify-between text-[10px] pt-1 border-t border-slate-800/60">
+            <span className={workerActive ? 'text-emerald-300 font-semibold flex items-center gap-1.5' : 'text-slate-400 flex items-center gap-1.5'}>
+              <span className={`w-1.5 h-1.5 rounded-full ${workerActive ? 'bg-emerald-400 animate-pulse' : 'bg-slate-600'}`}></span>
+              <span>{workerActive ? 'Active (Auto-Uploads ON)' : 'Standby (Paused)'}</span>
+            </span>
+            <span className={`px-1.5 py-0.5 rounded font-mono font-bold text-[9px] ${
+              workerActive ? 'bg-emerald-500/20 text-emerald-300 border border-emerald-500/30' : 'bg-slate-800 text-slate-400'
+            }`}>
+              {workerActive ? 'ON' : 'OFF'}
+            </span>
+          </div>
+          
+          <p className="text-[10px] text-slate-400 leading-tight">
+            {workerActive ? 'Every cut clip is queued across consecutive future days.' : 'Turn ON to auto-schedule clips directly onto YouTube.'}
+          </p>
         </div>
 
         {/* AI Engine & System Status Card */}

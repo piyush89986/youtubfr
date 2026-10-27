@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { Sliders, Sparkles, Clock, Globe, Shield, Save, Check } from 'lucide-react';
+import { Sliders, Sparkles, Clock, Globe, Shield, Save, Check, Cpu } from 'lucide-react';
 import { useAuth } from '../context/AuthContext';
 import { useToast } from '../context/ToastContext';
 import { authService } from '../services/authService';
@@ -20,6 +20,9 @@ export const SettingsPage = () => {
   const [autoApprove, setAutoApprove] = useState(
     user?.settings?.autoApproveClips || false
   );
+  const [workerActive, setWorkerActive] = useState(
+    user?.settings?.workerActive !== false
+  );
   const [saving, setSaving] = useState(false);
   const [saved, setSaved] = useState(false);
 
@@ -33,6 +36,8 @@ export const SettingsPage = () => {
           defaultTimezone,
           defaultPublishingHour: Number(defaultPublishingHour),
           autoApproveClips: autoApprove,
+          workerActive,
+          autoSchedulerEnabled: workerActive,
         },
       });
       await refreshUserData();
@@ -212,6 +217,43 @@ export const SettingsPage = () => {
               </div>
             </div>
           </div>
+        </div>
+
+        {/* Auto-Worker & Day-by-Day Scheduler Switch */}
+        <div className={`p-4 sm:p-6 rounded-2xl sm:rounded-3xl border transition-all space-y-3 ${
+          workerActive
+            ? 'bg-gradient-to-r from-emerald-950/30 via-slate-900 to-indigo-950/20 border-emerald-500/40 shadow-glow'
+            : 'bg-slate-900/40 border-slate-800'
+        }`}>
+          <div className="flex items-center justify-between">
+            <div className="flex items-center gap-2.5">
+              <div className={`p-2 rounded-xl border ${
+                workerActive ? 'bg-emerald-500/10 text-emerald-400 border-emerald-500/20' : 'bg-slate-800 text-slate-500 border-slate-700'
+              }`}>
+                <Cpu className="w-5 h-5" />
+              </div>
+              <div>
+                <h3 className="text-sm font-bold text-white">Auto-Worker & Day-by-Day Scheduler</h3>
+                <p className="text-xs text-slate-400">Automatically queue and distribute extracted clips across future days</p>
+              </div>
+            </div>
+
+            <label className="relative inline-flex items-center cursor-pointer">
+              <input
+                type="checkbox"
+                checked={workerActive}
+                onChange={(e) => setWorkerActive(e.target.checked)}
+                className="sr-only peer"
+              />
+              <div className="w-11 h-6 bg-slate-800 peer-focus:outline-none rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-slate-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-emerald-600"></div>
+              <span className={`ml-2 text-xs font-mono font-bold transition-colors ${workerActive ? 'text-emerald-400' : 'text-slate-500'}`}>
+                {workerActive ? 'ON' : 'OFF'}
+              </span>
+            </label>
+          </div>
+          <p className="text-xs text-slate-400 leading-relaxed">
+            When ON: Whenever an uploaded video is processed into shorts, every clip is automatically scheduled day-by-day directly onto your YouTube calendar starting tomorrow at your chosen hour. No day will be left without an upload.
+          </p>
         </div>
 
         {/* Schedule Defaults */}
