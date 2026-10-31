@@ -18,9 +18,21 @@ export const DashboardPage = ({
   const { user, connectedChannels, workerActive, toggleWorker } = useAuth();
   const toast = useToast();
   const [stats, setStats] = useState(null);
+  const [workerHealth, setWorkerHealth] = useState(null);
   const [loading, setLoading] = useState(true);
   const [refreshing, setRefreshing] = useState(false);
   const [isTogglingWorker, setIsTogglingWorker] = useState(false);
+
+  const fetchWorkerHealth = async () => {
+    try {
+      const res = await dashboardService.getWorkerStatus();
+      if (res && res.data) {
+        setWorkerHealth(res.data);
+      }
+    } catch (e) {
+      setWorkerHealth({ connected: false });
+    }
+  };
 
   const handleToggleWorker = async () => {
     setIsTogglingWorker(true);
@@ -41,6 +53,7 @@ export const DashboardPage = ({
 
   const fetchStats = async () => {
     try {
+      fetchWorkerHealth();
       const data = await dashboardService.getStats();
       if (data && data.data) {
         setStats(data.data);
@@ -73,10 +86,18 @@ export const DashboardPage = ({
       <div className="relative rounded-3xl p-6 sm:p-8 bg-gradient-to-r from-rose-950/40 via-purple-950/20 to-slate-900 border border-rose-500/20 overflow-hidden shadow-2xl">
         <div className="relative z-10 flex flex-col md:flex-row md:items-center justify-between gap-6">
           <div className="space-y-2 max-w-xl">
-            <div className="flex items-center gap-2">
+            <div className="flex flex-wrap items-center gap-2">
               <span className="px-3 py-1 rounded-full text-xs font-bold bg-rose-500/20 text-rose-300 border border-rose-500/30">
                 AI Automation Active
               </span>
+              <div className="flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-mono font-semibold border bg-slate-900/80 border-slate-800">
+                <span className={`w-2 h-2 rounded-full ${workerHealth?.connected ? 'bg-emerald-400 animate-pulse' : 'bg-amber-400'}`} />
+                <span className={workerHealth?.connected ? 'text-emerald-300' : 'text-amber-300'}>
+                  {workerHealth?.connected
+                    ? `Render Worker: Online (${workerHealth.latencyMs}ms)`
+                    : 'Render Worker: Standby'}
+                </span>
+              </div>
               <span className="text-xs text-slate-400">Welcome back, {user?.name || 'Creator'}</span>
             </div>
             <h1 className="text-2xl sm:text-3xl font-black text-white tracking-tight">

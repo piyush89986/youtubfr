@@ -26,7 +26,8 @@ export const UploadModal = ({ isOpen, onClose, onUploadComplete }) => {
   const [dragActive, setDragActive] = useState(false);
   const [file, setFile] = useState(null);
   const [videoTitle, setVideoTitle] = useState('');
-  const [clippingMode, setClippingMode] = useState('ai_smart'); // 'ai_smart' | 'fixed'
+  const [clippingMode, setClippingMode] = useState('ai_smart'); // 'ai_smart' | 'full_parts' | 'fixed'
+  const [maxClips, setMaxClips] = useState(3); // 1, 2, 3, 5, 10, 'all'
   const [selectedAiEngine, setSelectedAiEngine] = useState(
     user?.settings?.preferredAIProvider || 'gemini'
   ); // 'gemini' | 'openai' | 'both'
@@ -256,6 +257,7 @@ export const UploadModal = ({ isOpen, onClose, onUploadComplete }) => {
         storageKey: finalKey,
         storageUrl: finalUrl,
         clippingMode,
+        maxClips,
         targetDuration: clipDuration,
         subtitlesEnabled,
         aiProvider: selectedAiEngine,
@@ -268,6 +270,7 @@ export const UploadModal = ({ isOpen, onClose, onUploadComplete }) => {
         storageKey: finalKey,
         storageUrl: finalUrl,
         clippingMode,
+        maxClips,
         targetDuration: clipDuration,
         subtitlesEnabled,
         aiProvider: selectedAiEngine,
@@ -399,46 +402,114 @@ export const UploadModal = ({ isOpen, onClose, onUploadComplete }) => {
               </div>
 
               {/* Clipping Mode Selector */}
-              <div className="grid grid-cols-1 sm:grid-cols-2 gap-2.5 sm:gap-3">
-                <button
-                  type="button"
-                  onClick={() => setClippingMode('ai_smart')}
-                  className={`p-3 rounded-2xl border text-left transition-all ${
-                    clippingMode === 'ai_smart'
-                      ? 'bg-rose-500/10 border-rose-500/40 text-white shadow-glow'
-                      : 'bg-slate-900/40 border-slate-800 text-slate-400 hover:text-slate-200'
-                  }`}
-                >
-                  <div className="flex items-center gap-1.5 text-xs font-bold mb-1 text-rose-300">
-                    <Sparkles className="w-3.5 h-3.5" />
-                    <span>AI Smart Clipping</span>
-                  </div>
-                  <p className="text-[11px] text-slate-400 leading-tight">
-                    Transcribes audio & identifies viral moments with speech hooks.
-                  </p>
-                </button>
+              <div>
+                <label className="block text-xs font-semibold text-slate-300 mb-1.5">Clipping Strategy</label>
+                <div className="grid grid-cols-1 sm:grid-cols-3 gap-2.5">
+                  <button
+                    type="button"
+                    onClick={() => {
+                      setClippingMode('ai_smart');
+                      if (maxClips === 'all') setMaxClips(3);
+                    }}
+                    className={`p-3 rounded-2xl border text-left transition-all ${
+                      clippingMode === 'ai_smart'
+                        ? 'bg-rose-500/10 border-rose-500/40 text-white shadow-glow'
+                        : 'bg-slate-900/40 border-slate-800 text-slate-400 hover:text-slate-200'
+                    }`}
+                  >
+                    <div className="flex items-center gap-1.5 text-xs font-bold mb-1 text-rose-300">
+                      <Sparkles className="w-3.5 h-3.5" />
+                      <span>AI Smart Viral Hooks</span>
+                    </div>
+                    <p className="text-[11px] text-slate-400 leading-tight">
+                      Extracts the top high-retention viral moments with speech hooks.
+                    </p>
+                  </button>
 
-                <button
-                  type="button"
-                  onClick={() => setClippingMode('fixed')}
-                  className={`p-3 rounded-2xl border text-left transition-all ${
-                    clippingMode === 'fixed'
-                      ? 'bg-indigo-500/10 border-indigo-500/40 text-white shadow-glow'
-                      : 'bg-slate-900/40 border-slate-800 text-slate-400 hover:text-slate-200'
-                  }`}
-                >
-                  <div className="flex items-center gap-1.5 text-xs font-bold mb-1 text-indigo-300">
-                    <Film className="w-3.5 h-3.5" />
-                    <span>Fixed-Length Segments</span>
-                  </div>
-                  <p className="text-[11px] text-slate-400 leading-tight">
-                    Splits video into uniform {clipDuration}s clips automatically.
-                  </p>
-                </button>
+                  <button
+                    type="button"
+                    onClick={() => {
+                      setClippingMode('full_parts');
+                      setMaxClips('all');
+                    }}
+                    className={`p-3 rounded-2xl border text-left transition-all ${
+                      clippingMode === 'full_parts'
+                        ? 'bg-amber-500/10 border-amber-500/40 text-white shadow-glow'
+                        : 'bg-slate-900/40 border-slate-800 text-slate-400 hover:text-slate-200'
+                    }`}
+                  >
+                    <div className="flex items-center gap-1.5 text-xs font-bold mb-1 text-amber-300">
+                      <Film className="w-3.5 h-3.5" />
+                      <span>Full Video Parts (100%)</span>
+                    </div>
+                    <p className="text-[11px] text-slate-400 leading-tight">
+                      Convert entire video sequentially into Part 1, Part 2, Part 3...
+                    </p>
+                  </button>
+
+                  <button
+                    type="button"
+                    onClick={() => setClippingMode('fixed')}
+                    className={`p-3 rounded-2xl border text-left transition-all ${
+                      clippingMode === 'fixed'
+                        ? 'bg-indigo-500/10 border-indigo-500/40 text-white shadow-glow'
+                        : 'bg-slate-900/40 border-slate-800 text-slate-400 hover:text-slate-200'
+                    }`}
+                  >
+                    <div className="flex items-center gap-1.5 text-xs font-bold mb-1 text-indigo-300">
+                      <Scissors className="w-3.5 h-3.5" />
+                      <span>Fixed Segments</span>
+                    </div>
+                    <p className="text-[11px] text-slate-400 leading-tight">
+                      Splits video into uniform {clipDuration}s chunks automatically.
+                    </p>
+                  </button>
+                </div>
               </div>
 
-              {/* AI Engine Model Selection (When AI Smart Clipping is active) */}
-              {clippingMode === 'ai_smart' && (
+              {/* Number of Shorts to Extract Selector (Kitne Shorts Nikalne Hai) */}
+              <div className="p-3.5 rounded-2xl bg-slate-900/60 border border-slate-800/80 space-y-2">
+                <div className="flex items-center justify-between">
+                  <label className="text-xs font-semibold text-slate-300 flex items-center gap-1.5">
+                    <Scissors className="w-3.5 h-3.5 text-rose-400" />
+                    <span>Number of Shorts to Extract</span>
+                  </label>
+                  <span className="text-[10px] text-slate-400 font-mono">
+                    {maxClips === 'all' ? 'All Video Parts' : `${maxClips} Short${maxClips > 1 ? 's' : ''}`}
+                  </span>
+                </div>
+                <div className="grid grid-cols-6 gap-1.5">
+                  {[1, 2, 3, 5, 10, 'all'].map((count) => (
+                    <button
+                      key={count}
+                      type="button"
+                      disabled={uploadState !== 'idle'}
+                      onClick={() => setMaxClips(count)}
+                      className={`py-2 px-1 rounded-xl text-xs font-mono font-bold transition-all text-center ${
+                        maxClips === count
+                          ? count === 'all'
+                            ? 'bg-amber-600 text-white shadow-glow'
+                            : 'bg-rose-600 text-white shadow-glow'
+                          : 'bg-slate-800/80 text-slate-400 hover:bg-slate-700 hover:text-white'
+                      }`}
+                    >
+                      {count === 'all' ? 'All' : count}
+                    </button>
+                  ))}
+                </div>
+                <p className="text-[10px] text-slate-400 leading-tight pt-0.5">
+                  {clippingMode === 'full_parts'
+                    ? maxClips === 'all'
+                      ? '🎬 Converts 100% of video from beginning to end into sequential continuous parts.'
+                      : `🎬 Converts video sequentially up to the first ${maxClips} continuous parts.`
+                    : clippingMode === 'ai_smart'
+                    ? `⚡ AI will analyze the entire video and extract the top ${maxClips === 'all' ? 'available' : maxClips} highest-virality moments.`
+                    : `⏱️ Extracts ${maxClips === 'all' ? 'all' : maxClips} fixed chunks of ${clipDuration}s each.`}
+                </p>
+              </div>
+
+              {/* AI Engine Model Selection */}
+              {(clippingMode === 'ai_smart' || clippingMode === 'full_parts') && (
                 <div className="p-3 rounded-2xl bg-slate-900/60 border border-slate-800/80 space-y-2">
                   <div className="flex items-center justify-between">
                     <label className="text-[11px] font-bold text-slate-300 flex items-center gap-1.5">
